@@ -4,7 +4,6 @@ App.prototype.initialize = function()
 {
     this.box = new Box();
     this.box.addTexture("textureOne", this.textures['lava']);
-    this.box.setShader(this.shaders['brolge']);
 
     this.boxScaling = Matrix4.scaling(new Vector3(100.0, 100.0, 100.0));
     this.angle = 0.0;
