@@ -1,0 +1,9 @@
+{
+    "assets":
+    {
+        "textures":
+        [
+            {"path": "textures/lava.jpg"}
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "name": "blur",
+    "use_ammo": true,
+    "assets":
+    {
+        "shaders":
+        [
+            {"name": "normal", "vertex": "shaders/basic.vert", "fragment": "shaders/basic.frag"}
+        ],
+        "meshes":
+        [
+            {"name": "ball", "path": "meshes/soccer_ball.obj"},
+            {"name": "tgcito", "path": "meshes/tgcito.obj"}
+        ],
+        "textures":
+        [
+            {"path": "textures/lava.jpg"},
+            {"name": "tgcito","path": "textures/uvw.jpg"}
+        ],
+        "sounds":
+        [
+            {"name": "water", "path": "sounds/outfoxing.mp3"}
+        ]
+    }
+}
