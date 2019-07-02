@@ -57,7 +57,6 @@ Mesh.prototype.render = function()
 	this.shader.use();
 	this.shader.setMeshData(this);
 
-
 	for (var textureName in this.textures)
 		this.shader.setTexture(this.textures[textureName], textureName);
 

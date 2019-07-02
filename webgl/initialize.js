@@ -126,7 +126,7 @@ function sourceLoaded()
 window.onload = function()
 {
     let coreResources = new Set(['webgl/core.js', 'webgl/projects/projects.js']);
-
+    
     resourceLoader = new SourceCodeLoader(coreResources);
     resourceLoader.setCallback(this, sourceLoaded);
     resourceLoader.start();

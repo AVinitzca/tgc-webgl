@@ -35,6 +35,8 @@ function ShaderLoader(paths)
     let loader = new ResourceLoader(paths, function(loader, element, resolve, reject)
     {
         var name = element.name;
+        if(name == undefined)
+            name = fileNameWithoutExtension(element.vertex);
         var vertex = undefined;
         var fragment = undefined;
 

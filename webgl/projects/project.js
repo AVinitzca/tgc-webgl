@@ -48,7 +48,7 @@ Project.prototype.startProject = function()
     core.app.textures = this.textureLoader.textures;
     core.app.sounds = this.soundLoader.sounds;
 
-    Renderer.shaders = this.shaderLoader.shaders;
+    Renderer.shaders = Object.assign(Renderer.shaders, this.shaderLoader.shaders);
 
     core.setWithoutPhysics();
 
@@ -87,23 +87,6 @@ Project.prototype.setAssetsLoader = function()
 
     this.assetLoader = new ResourceLoaderCollection([this.meshLoader, this.shaderLoader, this.textureLoader, this.soundLoader]);
 
-
-    /*this.assetLoader = new AssetLoader(this.assets);
-    this.assetLoader.set
-
-    Projects.assetLoader = new AssetLoader(function()
-    {
-        core.startProject();
-        let assets = Projects.assetLoader.getAssets();
-        core.app.meshes = assets.meshes;
-        core.app.shaders = assets.shaders;
-        core.app.textures = assets.textures;
-        core.app.sounds = assets.sounds;
-        Renderer.shaders = assets.shaders;
-        core.app.initialize();
-        core.currentLoop = core.mainLoop;
-        core.loop(0.0);
-    }, Projects.sourceLoader);*/
 }
 
 

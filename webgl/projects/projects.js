@@ -75,6 +75,7 @@ Projects.load = function(projectName)
 
 Projects.loadDefault = function()
 {
+    Renderer.shaders = Object.assign(Renderer.shaders, Renderer.defaultShaderLoader.shaders);
     Renderer.defaultShader = Renderer.defaultShaderLoader.shaders['default'];
     if(Projects.default != undefined)
         Projects.load(Projects.default);

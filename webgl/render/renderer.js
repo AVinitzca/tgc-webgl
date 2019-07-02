@@ -9,6 +9,7 @@ function Renderer(){}
 
 Renderer.initialize = function()
 {
+    Renderer.shaders = {};
     Renderer.findCanvas();
     Renderer.canvas2D = new Canvas2D(Renderer.width, Renderer.height);
     Renderer.initializeGL();
@@ -39,7 +40,7 @@ Renderer.initializeGL = function()
         Renderer.gl.viewportWidth = Renderer.width;
         Renderer.gl.viewportHeight = Renderer.height;
         Renderer.gl.enable(Renderer.gl.DEPTH_TEST);
-        Renderer.gl.enable(Renderer.gl.CULL_FACE);
+        //Renderer.gl.enable(Renderer.gl.CULL_FACE);
         Renderer.gl.disable(Renderer.gl.BLEND);
     }
     catch(e)
