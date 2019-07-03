@@ -20,7 +20,7 @@ Support on other browsers is currently unstable. You may try to run your `index.
 
 ### Finding projects
 
-You may find available projects by using __`Projects.list();`__ on the console.
+You may find available projects by using __`javascript Projects.list();`__ on the console.
 
 ### Loading projects
 
