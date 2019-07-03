@@ -20,14 +20,19 @@ Support on other browsers is currently unstable. You may try to run your `index.
 
 ### Finding projects
 
-You may find available projects by using __
+You may find available projects by using
 ```javascript 
-Projects.list();```
-__ on the console.
+Projects.list();
+```
+on your console.
 
 ### Loading projects
 
-You can load projects by using __`Projects.load("your-project-name");`__ on the console.
+You can load projects by using
+```javascript
+Projects.load("your-project-name");
+``` 
+on your console.
 
 
 
