@@ -1,6 +1,6 @@
 resourceLoader.load('webgl/math/gl-matrix.js');
 resourceLoader.load('webgl/render/plane.js');
-resourceLoader.load('webgl/render/box.js');
+resourceLoader.load('webgl/render/cube.js');
 resourceLoader.load('webgl/render/cylinder.js');
 
 
