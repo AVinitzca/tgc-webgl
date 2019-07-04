@@ -24,7 +24,6 @@ You may find available projects by using
 ```javascript 
 Projects.list();
 ```
-on your console.
 
 ### Loading projects
 
@@ -32,8 +31,6 @@ You can load projects by using
 ```javascript
 Projects.load("your-project-name");
 ``` 
-on your console.
-
 
 
 

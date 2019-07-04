@@ -2,7 +2,7 @@ function App(){}
 
 App.prototype.initialize = function()
 {
-    this.box = new Box();
+    this.box = new Cube();
     this.box.addTexture("textureOne", this.textures['lava']);
 
     this.boxScaling = Matrix4.scaling(new Vector3(100.0, 100.0, 100.0));
