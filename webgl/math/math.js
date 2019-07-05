@@ -1,9 +1,7 @@
-
 Math.lerp = function(a, b, f)
 {
     return a + f * (b - a);
-}
-
+};
 
 Array.flatten = function(array)
 {
@@ -11,4 +9,4 @@ Array.flatten = function(array)
     {
         return flat.concat((Array.isArray(toFlatten) || toFlatten instanceof Float32Array) ? Array.flatten(toFlatten) : toFlatten);
     }, []);
-}
+};

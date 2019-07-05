@@ -1,31 +1,39 @@
-function App(){}
-
-App.prototype.initialize = function()
+App = class
 {
-    this.box = new Cube();
-    this.box.addTexture("textureOne", this.textures['lava']);
+    constructor()
+    {
+        this.meshes = {};
+        this.textures = {};
+        this.shaders = {};
+        this.sounds = {};
+    }
 
-    this.boxScaling = Matrix4.scaling(new Vector3(100.0, 100.0, 100.0));
-    this.angle = 0.0;
+    initialize()
+    {
+        this.box = new Cube();
+        this.box.addTexture("textureOne", this.textures['lava']);
 
-    this.camera = {position: new Vector3(300.0), lookAt: Vector3.Zero(), up: new Vector3(0.0, 1.0, 0.0)};
-    Renderer.setCamera(this.camera);
-}
+        this.boxScaling = Matrix4.scaling(new Vector3(100.0, 100.0, 100.0));
+        this.angle = 0.0;
+        this.box.transform = this.boxScaling;
+        this.camera = {position: new Vector3(400.0), lookAt: Vector3.zero, up: new Vector3(0.0, 1.0, 0.0)};
 
-App.prototype.update = function(elapsedTime)
-{
-    this.box.transform = Matrix4.multiply(Matrix4.rotationY(this.angle), this.boxScaling);
-    this.angle += 2.0 * elapsedTime;
-}
+        Core.renderer.setCamera(this.camera);
+    }
 
-App.prototype.render = function()
-{
-    this.box.render();
-}
+    update(elapsedTime)
+    {
+        this.box.transform = Matrix4.multiply(Matrix4.rotationY(this.angle), this.boxScaling);
+        this.angle += 2.0 * elapsedTime;
+    }
 
-App.prototype.dispose = function()
-{
-    this.box.dispose();
-}
+    render()
+    {
+        this.box.render();
+    }
 
-
+    dispose()
+    {
+        this.box.dispose();
+    }
+};

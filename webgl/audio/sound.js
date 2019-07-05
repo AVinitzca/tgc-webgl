@@ -1,12 +1,15 @@
-function Sound(decodedBuffer)
+class Sound extends AudioBufferSourceNode
 {
-    var sound = AudioManager.createSound();
-    sound.buffer = decodedBuffer;
-    return sound;
-}
+    constructor(decodedBuffer)
+    {
+        super(Core.audioManager, decodedBuffer);
+        this.buffer = decodedBuffer;
+    }
 
-AudioBufferSourceNode.prototype.moult = function()
-{
-    return new Sound(this.buffer);
+    moult()
+    {
+        return new Sound(this.buffer);
+    }
+
 }
 

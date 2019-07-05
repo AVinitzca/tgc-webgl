@@ -1,87 +1,77 @@
-function loadTexture(name, path, after)
-{
-	_textures[name] = new Texture(path, after);
-}
 
-function Texture(path, after)
+
+class Texture
 {
-	if(path instanceof Object)
-		this.createFromSize(Renderer.gl, path);
-	else
+	constructor(path, after)
 	{
-		this.gl = Renderer.gl;
-		this.id = this.gl.createTexture();
-		this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
-		this.fillWithBluePixel();
-		this.after = after;
+		if(path instanceof Object)
+			this.createFromSize(Core.renderer.gl, path);
+		else
+		{
+			this.gl = Core.renderer.gl;
+			this.id = this.gl.createTexture();
+			this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
+			this.fillWithBluePixel();
+			this.after = after;
 
-		this.loadImageAsync(path);
+			this.loadImageAsync(path);
+		}
 	}
-}
 
-Texture.prototype.createFromSize = function(gl, size)
-{
-	this.gl = gl;
-	this.width = size.x;
-	this.height = size.y;
-	this.id = this.gl.createTexture();
-
-	this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT );
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT );
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-
-	this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, size.x, size.y, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-}
-
-Texture.prototype.loadImageAsync = function(path)
-{
-	this.image = new Image();
-	this.image.src = path;
-	var texture = this;
-
-	this.image.addEventListener('load', function()
+	createFromSize(gl, size)
 	{
-		texture.generateTexture();
-		texture.after();
-	});
-}
+		this.gl = gl;
+		this.width = size.x;
+		this.height = size.y;
+		this.id = this.gl.createTexture();
 
-Texture.prototype.getWidth = function()
-{
-	return this.width;
-}
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-Texture.prototype.getHeight = function()
-{
-	return this.height;
-}
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, size.x, size.y, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+	}
 
-Texture.prototype.fillWithBluePixel = function()
-{
-	this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
-}
+	loadImageAsync(path)
+	{
+		this.image = new Image();
+		this.image.src = path;
+		var texture = this;
 
-Texture.prototype.generateTexture = function()
-{
-	this.width = this.image.width;
-	this.height = this.image.height;
-	this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
-	this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
-	this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image);
-	//gl.generateMipmap(gl.TEXTURE_2D);
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
-	this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
-}
+		this.image.addEventListener('load', function()
+		{
+			texture.generateTexture();
+			texture.after();
+		});
+	}
 
-Texture.prototype.getId = function()
-{
-	return this.id;
-}
+	fillWithBluePixel()
+	{
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, 1, 1, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+	}
 
-Texture.prototype.dispose = function()
-{
-	this.gl.deleteTexture(this.id);
+	generateTexture()
+	{
+		this.width = this.image.width;
+		this.height = this.image.height;
+		this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+		this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image);
+		//gl.generateMipmap(gl.TEXTURE_2D);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+	}
+
+	getId()
+	{
+		return this.id;
+	}
+
+	dispose()
+	{
+		this.gl.deleteTexture(this.id);
+	}
 }

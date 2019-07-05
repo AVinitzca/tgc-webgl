@@ -1,39 +1,106 @@
 resourceLoader.load('webgl/math/gl-matrix.js');
 resourceLoader.load('webgl/render/plane.js');
 resourceLoader.load('webgl/render/cube.js');
+resourceLoader.load('webgl/render/shaded-cube.js');
 resourceLoader.load('webgl/render/cylinder.js');
 
 
-function Mesh(vertices, indices, normals = null, textureBuffer = null)
+class Mesh
 {
-	this.gl = Renderer.gl;
-
-	if(Array.isArray(vertices))
+	constructor(vertices, indices, normals = null, textureBuffer = null)
 	{
-		this.vertices = vertices;
-		this.vertexBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, vertices, 3);
+		this.gl = Core.renderer.gl;
+
+		if(Array.isArray(vertices))
+		{
+			this.vertices = vertices;
+			this.vertexBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, vertices, 3);
+		}
+		else
+		{
+			this.vertices = vertices.data;
+			this.vertexBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, vertices.data, vertices.size);
+		}
+
+		this.indices = indices;
+		this.normals = normals;
+
+		this.indexBuffer = _buildBuffer(this.gl, this.gl.ELEMENT_ARRAY_BUFFER, indices, 1);
+
+		if(normals != null)
+			this.normalBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, normals, 3);
+
+		if(textureBuffer)
+			this.textureBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, textureBuffer, 2);
+
+		this.textures = {};
+		this.transform = mat4.identity();
+
+		this.shader = Core.renderer.defaultShader;
 	}
-	else
+
+	render()
 	{
-		this.vertices = vertices.data;
-		this.vertexBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, vertices.data, vertices.size);
+		this.shader.use();
+		this.shader.setMeshData(this);
+
+		for (var textureName in this.textures)
+			this.shader.setTexture(this.textures[textureName], textureName);
+
+		this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+		this.gl.drawElements(this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
 	}
 
-	this.indices = indices;
-	this.normals = normals;
+	addTexture(textureName, texture)
+	{
+		this.textures[textureName] = texture;
+	}
 
-	this.indexBuffer = _buildBuffer(this.gl, this.gl.ELEMENT_ARRAY_BUFFER, indices, 1);
+	clearTextures()
+	{
+		this.textures = {};
+	}
 
-	if(normals != null)
-		this.normalBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, normals, 3);
+	get center()
+	{
+		if(this.calculatedCenter === undefined)
+		{
+			var calculatedCenter = vec3.createFrom(0.0, 0.0, 0.0);
+			var count = this.vertices.length / 3.0;
+			for(var index = 0; index < this.vertices.length; index += 3)
+			{
+				var vertexWeight = vec3.createFrom(this.vertices[index], this.vertices[index + 1], this.vertices[index + 2]);
+				vec3.add(calculatedCenter, vertexWeight, calculatedCenter);
+			}
+			this.calculatedCenter = vec3.scale(calculatedCenter, 1.0 / count) ;
+		}
+		return this.calculatedCenter;
+	}
 
-	if(textureBuffer)
-		this.textureBuffer = _buildBuffer(this.gl, this.gl.ARRAY_BUFFER, textureBuffer, 2);
+	get radius()
+	{
+		if(this.calculatedRadius === undefined)
+		{
+			var max = 0.0;
+			for(var index = 0; index < 5; index++)
+			{
+				var extent = (this.vertices[index] < 0.0) ? this.vertices[index] * -1.0 : this.vertices[index];
+				if(extent > max)
+					max = extent;
+			}
+			this.calculatedRadius = max;
+		}
+		return this.calculatedRadius;
+	}
 
-	this.textures = {};
-	this.transform = mat4.identity();
+	dispose()
+	{
+		this.gl.deleteBuffer(this.normalBuffer);
+		this.gl.deleteBuffer(this.textureBuffer);
+		this.gl.deleteBuffer(this.vertexBuffer);
+		this.gl.deleteBuffer(this.indexBuffer);
+	}
 
-	this.shader = Renderer.defaultShader;
 }
 
 function _buildBuffer(gl, type, data, itemSize)
@@ -47,72 +114,6 @@ function _buildBuffer(gl, type, data, itemSize)
 	return buffer;
 }
 
-Mesh.prototype.setShader = function(shader)
-{
-	this.shader = shader;
-}
-
-Mesh.prototype.render = function()
-{
-	this.shader.use();
-	this.shader.setMeshData(this);
-
-	for (var textureName in this.textures)
-		this.shader.setTexture(this.textures[textureName], textureName);
-
-	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-	this.gl.drawElements(this.gl.TRIANGLES, this.indexBuffer.numItems, this.gl.UNSIGNED_SHORT, 0);
-}
-
-Mesh.prototype.addTexture = function(textureName, texture)
-{
-	this.textures[textureName] = texture;
-}
-
-Mesh.prototype.clearTextures = function()
-{
-	this.textures = {};
-}
-
-Mesh.prototype.getCenter = function()
-{
-	if(this.center == undefined)
-	{
-		var calculatedCenter = vec3.createFrom(0.0, 0.0, 0.0);
-		var count = this.vertices.length / 3.0;
-		for(var index = 0; index < this.vertices.length; index += 3)
-		{
-			var vertexWeight = vec3.createFrom(this.vertices[index], this.vertices[index + 1], this.vertices[index + 2]);
-			vec3.add(calculatedCenter, vertexWeight, calculatedCenter);
-		}
-		this.center = vec3.scale(calculatedCenter, 1.0 / count) ;
-	}
-	return this.center;
-}
-
-Mesh.prototype.getRadius = function()
-{
-	if(this.radius == undefined)
-	{
-		var max = 0.0;
-		for(var index = 0; index < 5; index++)
-		{
-			var extent = (this.vertices[index] < 0.0) ? this.vertices[index] * -1.0 : this.vertices[index];
-			if(extent > max)
-				max = extent;
-		}
-		this.radius = max;
-	}
-	return this.radius;
-}
-
-Mesh.prototype.dispose = function()
-{
-	this.gl.deleteBuffer(this.normalBuffer);
-	this.gl.deleteBuffer(this.textureBuffer);
-	this.gl.deleteBuffer(this.vertexBuffer);
-	this.gl.deleteBuffer(this.indexBuffer);
-}
 
 
 function* triangulate(elements) 
@@ -319,9 +320,6 @@ function createMeshFromOBJ(objectData, options)
 	var materialNames = materialNamesByIndex;
 	var materialIndices = materialIndicesByName;
 	var materialsByIndex = {};
-
-	if (options.calcTangentsAndBitangents)
-		this.calculateTangentsAndBitangents();
 
 	return new Mesh(vertices, indices, vertexNormals, textures);
 }

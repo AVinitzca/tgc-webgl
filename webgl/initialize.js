@@ -1,126 +1,132 @@
-let core = null, resourceLoader = null;
+let resourceLoader = null;
 
-function ResourceLoader(resources, each)
+class ResourceLoader
 {
-    if(resources instanceof Set)
-        this.resources = resources;
-    else
-        this.resources = new Set(resources);
-
-    this.remaining = this.resources.size;
-    this.callback = {};
-    this.iterator = each;
-    this.started = false;
-    this.needsToStart = 0;
-}
-
-ResourceLoader.prototype.load = function(element)
-{
-    if(!this.resources.has(element))
+    constructor(resources, iterator)
     {
-        this.remaining++;
-        this.resources.add(element);
-        if(this.started)
+        if(resources instanceof Set)
+            this.resources = resources;
+        else
+            this.resources = new Set(resources);
+
+        this.remaining = this.resources.size;
+        this.callback = {};
+        this.iterator = iterator;
+        this.started = false;
+        this.needsToStart = 0;
+    }
+
+    load(element)
+    {
+        if(!this.resources.has(element))
         {
-            let loader = this;
-            const promise = new Promise((resolve, reject) =>
+            this.remaining++;
+            this.resources.add(element);
+            if(this.started)
             {
-                loader.iterator(loader, element, resolve, reject);
-            });
+                let loader = this;
+                const promise = new Promise((resolve, reject) =>
+                {
+                    loader.iterator(loader, element, resolve, reject);
+                });
+            }
         }
     }
-}
 
-ResourceLoader.prototype.loadMany = function(element)
-{
-    element.forEach(e => this.load(e));
-}
-
-ResourceLoader.prototype.start = function()
-{
-    if(this.needsToStart > 0)
-        this.needsToStart--;
-
-    if(this.needsToStart == 0)
+    loadMany(element)
     {
-        let loader = this;
-        this.started = true;
-        if (this.resources.size > 0)
-            this.resources.forEach(function (resource) {
-                const promise = new Promise((resolve, reject) => {
-                    loader.iterator(loader, resource, resolve, reject);
+        element.forEach(e => this.load(e));
+    }
+
+    start()
+    {
+        if(this.needsToStart > 0)
+            this.needsToStart--;
+
+        if(this.needsToStart === 0)
+        {
+            let loader = this;
+            this.started = true;
+            if (this.resources.size > 0)
+                this.resources.forEach(function (resource) {
+                    const promise = new Promise((resolve, reject) => {
+                        loader.iterator(loader, resource, resolve, reject);
+                    });
                 });
-            });
-        else
+            else
+                this.end();
+        }
+    }
+
+    advance()
+    {
+        this.remaining--;
+        if(this.remaining === 0)
             this.end();
+    }
+
+    setCallback(object, callback)
+    {
+        this.callback = {object: object, method: callback};
+    }
+
+    end()
+    {
+        this.callback.method.call(this.callback.object);
+    }
+
+    derivesIn(resourceLoader)
+    {
+        this.setCallback(resourceLoader, resourceLoader.start);
+        resourceLoader.needsToStart++;
     }
 }
 
-ResourceLoader.prototype.advance = function()
+class ResourceLoaderCollection extends ResourceLoader
 {
-    this.remaining--;
-    if(this.remaining == 0)
-        this.end();
-}
-
-ResourceLoader.prototype.setCallback = function(object, callback)
-{
-    this.callback = {object: object, method: callback};
-}
-
-ResourceLoader.prototype.end = function()
-{
-    this.callback.method.call(this.callback.object);
-}
-
-ResourceLoader.prototype.derivesIn = function(resourceLoader)
-{
-    this.setCallback(resourceLoader, resourceLoader.start);
-    resourceLoader.needsToStart++;
-}
-
-function ResourceLoaderCollection(resources)
-{
-    ResourceLoader.call(this, resources, function(loader, resource){resource.start();});
-    let loader = this;
-    this.resources.forEach(resource => resource.setCallback(loader, loader.advance));
-}
-
-ResourceLoaderCollection.prototype = new ResourceLoader();
-
-ResourceLoaderCollection.prototype.load = function(element)
-{
-    element.setCallback(this, this.advance);
-    ResourceLoader.prototype.load.call(this, element);
-}
-
-function SourceCodeLoader(resources)
-{
-    var injectScript = function(loader, source, resolve, reject)
+    constructor(resources)
     {
-        const script = document.createElement('script');
-        document.body.appendChild(script);
-        script.onload = function(){loader.advance();};
-        script.onerror = reject;
-        script.async = true;
-        script.src = source;
-    };
-    return new ResourceLoader(resources, injectScript);
+        super(resources, function(loader, resource){resource.start();});
+        let loader = this;
+        this.resources.forEach(resource => resource.setCallback(loader, loader.advance));
+    }
+
+    load(element)
+    {
+        element.setCallback(this, this.advance);
+        super.load(element);
+    }
 }
 
-function sourceLoaded()
+class SourceCodeLoader extends ResourceLoader
 {
-    core = new Core();
+    constructor(resources)
+    {
+        super(resources, function(loader, source, resolve, reject)
+        {
+            const script = document.createElement('script');
+            document.body.appendChild(script);
+            script.onload = function(){loader.advance();};
+            script.onerror = reject;
+            script.async = true;
+            script.src = source;
+        });
+    }
+}
+
+window.sourceLoaded = function()
+{
+    Core.initialize();
     Projects.initialize();
 
     let loadProject = new ResourceLoader([], function(loader) {loader.advance();});
     loadProject.setCallback(Projects, Projects.loadDefault);
 
-    core.defaultContentLoader().derivesIn(loadProject);
+    Core.defaultContentLoader.derivesIn(loadProject);
     Projects.scanner.derivesIn(loadProject);
 
     Projects.find();
-    core.loadDefaultContent();
+    Core.loadDefaultContent();
 }
 
 window.onload = function()
@@ -128,13 +134,13 @@ window.onload = function()
     let coreResources = new Set(['webgl/core.js', 'webgl/projects/projects.js']);
     
     resourceLoader = new SourceCodeLoader(coreResources);
-    resourceLoader.setCallback(this, sourceLoaded);
+    resourceLoader.setCallback(window, window.sourceLoaded);
     resourceLoader.start();
 };
 
 
-window.onbeforeunload = function(e)
+window.onbeforeunload = function()
 {
-    if(core != undefined)
-        core.destroy();
-}
+    if(Core !== undefined)
+        Core.dispose();
+};

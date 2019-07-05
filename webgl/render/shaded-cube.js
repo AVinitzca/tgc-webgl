@@ -1,7 +1,12 @@
-function ShadedCube()
+resourceLoader.load('webgl/render/mesh.js');
+
+class ShadedCube extends Mesh
 {
-    var vertices = {
-        data:
+    constructor()
+    {
+        let vertices =
+        {
+            data:
             [
                 -1.000000, -1.000000, 1.000000,
                 1.000000, -1.000000, 1.000000,
@@ -11,21 +16,22 @@ function ShadedCube()
                 1.000000, 1.000000, -1.000000,
                 -1.000000, -1.000000, -1.000000,
                 1.000000, -1.000000, -1.000000
-            ], size: 3};
+            ],
+        size: 3};
 
 
-    var textureCoordinates =
-        [
-            0.000000, 0.000000,
-            1.000000, 0.000000,
-            0.000000, 1.000000,
-            1.000000, 1.000000,
-            1.000000, 1.000000,
-            0.000000, 1.000000,
-            1.000000, 0.000000,
-            0.000000, 0.000000,
-        ];
-    var normals =
+        let textureCoordinates =
+            [
+                0.000000, 0.000000,
+                1.000000, 0.000000,
+                0.000000, 1.000000,
+                1.000000, 1.000000,
+                1.000000, 1.000000,
+                0.000000, 1.000000,
+                1.000000, 0.000000,
+                0.000000, 0.000000,
+            ];
+        let normals =
         [
             (new Vector3(-1.000000, -1.000000, 1.000000)).normalized(),
             (new Vector3(1.000000, -1.000000, 1.000000)).normalized(),
@@ -37,9 +43,9 @@ function ShadedCube()
             (new Vector3(1.000000, -1.000000, -1.00000)).normalized()
         ];
 
-    normals = Array.flatten(normals);
+        normals = Array.flatten(normals);
 
-    var indices =
+        let indices =
         [
             7, 1, 0,
             0, 6, 7,
@@ -59,8 +65,6 @@ function ShadedCube()
             7, 6, 4,
             4, 5, 7
         ];
-    Mesh.call(this, vertices, indices, normals, textureCoordinates);
+        super(vertices, indices, normals, textureCoordinates);
+    }
 }
-
-ShadedCube.prototype = Object.create(Mesh.prototype);
-ShadedCube.prototype.constructor = ShadedCube;

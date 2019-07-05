@@ -1,35 +1,41 @@
-
-function AmmoCylinder(radius, height, mass, transform)
+class AmmoCylinder extends Ammo.btRigidBody
 {
-    var shape = new Ammo.btSphereShape((new Vector3(radius, height / 2.0, radius)).toAmmoVector());
-    var ammoTransform = new Ammo.btTransform();
-    ammoTransform.setFromOpenGLMatrix(transform);
-    var inertia = Vector3.Zero().toAmmoVector();
-    shape.calculateLocalInertia(mass, inertia);
-    var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-    return new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    constructor(radius, height, mass, transform)
+    {
+        var shape = new Ammo.btCylindershape((new Vector3(radius, height / 2.0, radius)).toAmmoVector());
+        var ammoTransform = new Ammo.btTransform();
+        ammoTransform.setFromOpenGLMatrix(transform);
+        var inertia = Vector3.zero.toAmmoVector();
+        shape.calculateLocalInertia(mass, inertia);
+        var motionState = new Ammo.btDefaultMotionState(ammoTransform);
+        super(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    }
 }
 
-function AmmoCylinderX(radius, height, mass, transform)
+class AmmoCylinderX extends Ammo.btRigidBody
 {
-    var shape = new Ammo.btSphereShape((new Vector3(height / 2.0, radius, radius)).toAmmoVector());
-    var ammoTransform = new Ammo.btTransform();
-    ammoTransform.setFromOpenGLMatrix(transform);
-    var inertia = Vector3.Zero().toAmmoVector();
-    shape.calculateLocalInertia(mass, inertia);
-    var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-    return new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    constructor(radius, height, mass, transform)
+    {
+        var shape = new Ammo.btCylinderShapeX((new Vector3(height / 2.0, radius, radius)).toAmmoVector());
+        var ammoTransform = new Ammo.btTransform();
+        ammoTransform.setFromOpenGLMatrix(transform);
+        var inertia = Vector3.zero.toAmmoVector();
+        shape.calculateLocalInertia(mass, inertia);
+        var motionState = new Ammo.btDefaultMotionState(ammoTransform);
+        super(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    }
 }
 
-
-function AmmoCylinderZ(radius, height, mass, transform)
+class AmmoCylinderZ extends Ammo.btRigidBody
 {
-    var shape = new Ammo.btSphereShape((new Vector3(radius, radius, height / 2.0)).toAmmoVector());
-    var ammoTransform = new Ammo.btTransform();
-    ammoTransform.setFromOpenGLMatrix(transform);
-    var inertia = Vector3.Zero().toAmmoVector();
-    shape.calculateLocalInertia(mass, inertia);
-    var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-    return new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    constructor(radius, height, mass, transform)
+    {
+        var shape = new Ammo.btCylinderShapeZ((new Vector3(radius, radius, height / 2.0)).toAmmoVector());
+        var ammoTransform = new Ammo.btTransform();
+        ammoTransform.setFromOpenGLMatrix(transform);
+        var inertia = Vector3.zero.toAmmoVector();
+        shape.calculateLocalInertia(mass, inertia);
+        var motionState = new Ammo.btDefaultMotionState(ammoTransform);
+        super(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    }
 }
-

@@ -1,56 +1,69 @@
-function Vector3(x = 0.0, y = null, z = null)
+
+class Vector3
 {
-    if(y == null)
-        return new Float32Array([x, x, x]);
+    constructor(x = 0.0, y = null, z = null)
+    {
+        if(y == null)
+            return new Float32Array([x, x, x]);
 
-    if(z == null)
-        return new Float32Array([x, y, 0.0]);
+        if(z == null)
+            return new Float32Array([x, y, 0.0]);
 
-    return new Float32Array([x, y, z]);
+        return new Float32Array([x, y, z]);
+    }
+
+    static get zero() // out of ten
+    {
+        return new Float32Array([0.0, 0.0, 0.0]);
+    }
+
+    static get up() // if you can
+    {
+        return new Float32Array([0.0, 1.0, 0.0]);
+    }
+
+    static get down() // and move it all around
+    {
+        return new Float32Array([0.0, -1.0, 0.0]);
+    }
+
+    static fromArray(array)
+    {
+        return new Float32Array(array);
+    }
+
+    static fromAmmoVector(vector)
+    {
+        return new Float32Array([vector.x(), vector.y(), vector.z()]);
+    }
 }
 
-function Vector2(x = 0.0, y = null)
+class Vector2
 {
-    if(y == null)
-        return new Float32Array([x, x]);
+    constructor(x = 0.0, y = null)
+    {
+        if(y == null)
+            return new Float32Array([x, x]);
 
-    return new Float32Array([x, y]);
+        return new Float32Array([x, y]);
+    }
+
+    static get up() // and fight
+    {
+        return new Float32Array([0.0, 1.0]);
+    }
+
+    static get down() // on it
+    {
+        return new Float32Array([0.0, -1.0]);
+    }
+
+    static fromArray(array)
+    {
+        return new Float32Array(array);
+    }
 }
 
-Vector3.Up = function()
-{
-    return new Float32Array([0.0, 1.0, 0.0]);
-}
-
-Vector2.Up = function()
-{
-    return new Float32Array([0.0, 1.0]);
-}
-
-Vector3.Down = function()
-{
-    return new Float32Array([0.0, -1.0, 0.0]);
-}
-
-Vector2.Down = function()
-{
-    return new Float32Array([0.0, -1.0]);
-}
-
-Vector2.fromArray = function(array)
-{
-    return new Float32Array(array);
-}
-
-Vector3.fromArray = function(array)
-{
-    return new Float32Array(array);
-}
-
-Vector3.fromAmmoVector = function(vector)
-{
-    return new Float32Array([vector.x(), vector.y(), vector.z()]);
-}
 
 Float32Array.prototype.clone = function()
 {
@@ -145,9 +158,3 @@ Float32Array.prototype.normalized = function()
     clone.normalize();
     return clone;
 }
-
-Vector3.Zero = function()
-{
-    return new Float32Array([0.0, 0.0, 0.0]);
-}
-

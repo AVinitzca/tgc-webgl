@@ -1,11 +1,14 @@
-
-function AmmoBox(size, mass, transform)
+class AmmoCube extends Ammo.btRigidBody
 {
-    var shape = new Ammo.btBoxShape(size.toAmmoVector());
-    var ammoTransform = new Ammo.btTransform();
-    ammoTransform.setFromOpenGLMatrix(transform);
-    var inertia = Vector3.Zero().toAmmoVector();
-    shape.calculateLocalInertia(mass, inertia);
-    var motionState = new Ammo.btDefaultMotionState(ammoTransform);
-    return new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    constructor(size, mass, transform)
+    {
+        var shape = new Ammo.btBoxShape(size.toAmmoVector());
+        var ammoTransform = new Ammo.btTransform();
+        ammoTransform.setFromOpenGLMatrix(transform);
+        var inertia = Vector3.zero.toAmmoVector();
+        shape.calculateLocalInertia(mass, inertia);
+        var motionState = new Ammo.btDefaultMotionState(ammoTransform);
+
+        super(new Ammo.btRigidBodyConstructionInfo(mass, motionState, shape, inertia));
+    }
 }
