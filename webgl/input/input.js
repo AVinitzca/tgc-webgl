@@ -6,14 +6,23 @@ class Input
         this.currentPressed = new Set();
         this.pastPressed = new Set();
 
-        var input = this;
+        this.mousePosition = Vector2.zero;
+        this.deltaMousePosition = new Vector2(0.1);
+
+        this.updatedMouseDelta = false;
+
+        let input = this;
         document.addEventListener("keydown", function(event){input.keyDownCallback(event);}, false);
         document.addEventListener("keyup", function(event){input.keyUpCallback(event);}, false);
         document.addEventListener('mousemove', (event, target) =>
         {
             target = target || event.target;
-            var rectangle = target.getBoundingClientRect();
-            input.mousePosition = new Vector2(event.clientX - rectangle.left, event.clientY - rectangle.top);
+            let rectangle = target.getBoundingClientRect();
+
+            let newPosition = new Vector2(event.clientX - rectangle.left, event.clientY - rectangle.top);
+            input.deltaMousePosition = newPosition.subtracted(input.mousePosition);
+            input.mousePosition = newPosition;
+            input.updatedMouseDelta = true;
         });
     }
 
@@ -21,6 +30,12 @@ class Input
     {
         this.pastPressed.clear();
         this.newPressed.clear();
+        if(!this.updatedMouseDelta && !this.mouseMoved())
+        {
+            this.deltaMousePosition = Vector2.zero;
+        }
+        else
+            this.updatedMouseDelta = false;
     }
 
     getMousePosition()
@@ -36,6 +51,26 @@ class Input
     get mouseY()
     {
         return this.mousePosition.y();
+    }
+
+    mouseDelta()
+    {
+        return this.deltaMousePosition;
+    }
+
+    mouseDeltaX()
+    {
+        return this.deltaMousePosition.x;
+    }
+
+    mouseDeltaY()
+    {
+        return this.deltaMousePosition.y;
+    }
+
+    mouseMoved()
+    {
+        return this.updatedMouseDelta;
     }
 
     keyDownCallback(event)

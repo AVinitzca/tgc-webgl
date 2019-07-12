@@ -7,7 +7,7 @@ class Plane extends Mesh
         let vertices = {data: [-1.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0], size: 3};
         let textureCoordinates = [0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0];
         let normals = [0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0];
-        let indices = [0, 1, 2, 0, 2, 3];
+        let indices = [0, 2, 1, 0, 3, 2];
 
         super(vertices, indices, normals, textureCoordinates);
     }

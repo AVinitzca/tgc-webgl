@@ -1,25 +1,20 @@
 {
-    "name": "blur",
-    "use_ammo": true,
     "assets":
     {
         "shaders":
         [
-            {"name": "normal", "vertex": "shaders/basic.vert", "fragment": "shaders/basic.frag"}
+            {"vertex": "shaders/blur-postprocess-horizontal.vert", "fragment": "shaders/blur-postprocess-horizontal.frag"},
+            {"vertex": "shaders/blur-postprocess.vert", "fragment": "shaders/blur-postprocess.frag"}
         ],
         "meshes":
         [
-            {"name": "ball", "path": "meshes/soccer_ball.obj"},
             {"name": "tgcito", "path": "meshes/tgcito.obj"}
         ],
         "textures":
         [
-            {"path": "textures/lava.jpg"},
-            {"name": "tgcito","path": "textures/uvw.jpg"}
-        ],
-        "sounds":
-        [
-            {"name": "water", "path": "sounds/outfoxing.mp3"}
+            {"name": "bricks", "path": "textures/brick-wall.jpg"},
+            {"path": "textures/concrete.jpg"},
+            {"name": "tgcito", "path": "textures/uvw.jpg"}
         ]
     }
 }

@@ -1,117 +1,178 @@
-class Matrix4
+
+class Matrix4 extends Float32Array
 {
-    constructor(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+    constructor(buffer, byteOffset, length)
     {
-        return new Float32Array([a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p]);
+        super(buffer, byteOffset, length);
     }
 
-    static multiply(matOne, matTwo)
+    clone()
     {
-        var destination = Matrix4.identity();
-        mat4.multiply(matOne, matTwo, destination);
+        return new Matrix4(this);
+    }
+
+    multiply(other)
+    {
+        let destination = this.clone();
+        mat4.multiply(destination, other, destination);
         return destination;
     }
 
-    static copy(other)
+    translate(vector)
     {
-        return new Float32Array(other);
+        return this.multiply(Matrix4.translation(vector));
+    }
+
+    scale(vector)
+    {
+        return this.multiply(Matrix4.scaling(vector));
+    }
+
+    rotate(angle, axis)
+    {
+        return this.multiply(Matrix4.rotation(angle, axis));
+    }
+
+    rotateX(angle)
+    {
+        return this.multiply(Matrix4.rotationX(angle));
+    }
+
+    rotateY(angle)
+    {
+        return this.multiply(Matrix4.rotationY(angle));
+    }
+
+    rotateZ(angle)
+    {
+        return this.multiply(Matrix4.rotationZ(angle));
+    }
+
+    transpose()
+    {
+        let destination = Matrix4.identity();
+        mat4.transpose(this, destination);
+        return destination;
+    }
+
+    determinant()
+    {
+        return mat4.determinant(this);
+    }
+
+    inverse()
+    {
+        let destination = Matrix4.identity();
+        mat4.inverse(this, destination);
+        return destination;
     }
 
     static identity()
     {
-        return Matrix4.copy(Matrix4.__identityPrototype);
+        return Matrix4.__identityPrototype.clone();
     }
 
     static translation(vector)
     {
-        var identity = Matrix4.identity();
-        identity[12] = vector[0];
-        identity[13] = vector[1];
-        identity[14] = vector[2];
-        return identity;
+        let destination = Matrix4.identity();
+        destination[12] = vector[0];
+        destination[13] = vector[1];
+        destination[14] = vector[2];
+        return destination;
     }
 
     static scaling(vector)
     {
-        var identity = Matrix4.identity();
-        identity[0] = vector[0];
-        identity[5] = vector[1];
-        identity[10] = vector[2];
-        return identity;
-    }
-
-    static rotationX(angle)
-    {
-        var identity = Matrix4.identity();
-        var sinA = Math.sin(angle);
-        identity[5] = identity[10] = Math.cos(angle);
-        identity[6] = sinA;
-        identity[9] = -sinA;
-        return identity;
-    }
-
-    static rotationY(angle)
-    {
-        var sinA = Math.sin(angle);
-        var identity = Matrix4.identity();
-        identity[0] = identity[10] = Math.cos(angle);
-        identity[2] = -sinA;
-        identity[8] = sinA;
-        return identity;
-    }
-
-    static rotationZ(angle)
-    {
-        var sinA = Math.sin(angle);
-        var identity = Matrix4.identity();
-        identity[0] = identity[5] = Math.cos(angle);
-        identity[1] = sinA;
-        identity[4] = -sinA;
-        return identity;
+        let destination = Matrix4.identity();
+        destination[0]  = vector[0];
+        destination[5]  = vector[1];
+        destination[10] = vector[2];
+        return destination;
     }
 
     static rotation(angle, axis)
     {
-        var rotation = Matrix4.identity();
-        mat4.rotate(rotation, angle, axis, rotation);
-        return rotation;
+        let destination = Matrix4.identity();
+        mat4.rotate(destination, angle, axis, destination);
+        return destination;
+    }
+
+    static rotationX(angle)
+    {
+        let sinA = Math.sin(angle);
+        let cosA = Math.cos(angle);
+        return new Matrix4([
+            1.0, 0.0, 0.0, 0.0,
+            0.0, cosA, sinA, 0.0,
+            0.0, -sinA, cosA, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        ]);
+    }
+
+    static rotationY(angle)
+    {
+        let sinA = Math.sin(angle);
+        let cosA = Math.cos(angle);
+        return new Matrix4([
+           cosA, 0.0, -sinA, 0.0,
+           0.0, 1.0, 0.0, 0.0,
+           sinA, 0.0, cosA, 0.0,
+           0.0, 0.0, 0.0, 1.0,
+        ]);
+    }
+
+    static rotationZ(angle)
+    {
+        let sinA = Math.sin(angle);
+        let cosA = Math.cos(angle);
+        return new Matrix4([
+            cosA, sinA, 0.0, 0.0,
+            -sinA, cosA, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0,
+        ]);
+    }
+
+    static lookAtLeftHanded(position, lookAt, up)
+    {
+        let destination = Matrix4.identity();
+        mat4.lookAt(position, lookAt, up, destination);
+        return destination;
+    }
+
+    static fromRotationTranslation(rotationQuaternion, translation)
+    {
+        let destination = Matrix4.identity();
+        mat4.fromRotationTranslation(rotationQuaternion, translation, destination);
+        return destination;
+    }
+
+    static frustum(left, right, bottom, top, near, far)
+    {
+        let destination = Matrix4.identity();
+        mat4.frustum(left, right, bottom, top, near, far, destination);
+        return destination;
+    }
+
+    static perspective(verticalFOV, aspectRatio, near, far)
+    {
+        let destination = Matrix4.identity();
+        mat4.perspective(verticalFOV, aspectRatio, near, far, destination);
+        return destination;
+    }
+
+    static orthogonalProjection(left, right, bottom, top, near, far)
+    {
+        let destination = Matrix4.identity();
+        mat4.ortho(left, right, bottom, top, near, far, destination);
+        return destination;
     }
 }
 
 Matrix4.__identityPrototype = new Matrix4
-(
+([
     1, 0, 0, 0,
     0, 1, 0, 0,
     0, 0, 1, 0,
     0, 0, 0, 1,
-);
-
-
-Float32Array.prototype.copy = function()
-{
-    return Matrix4.copy(this);
-}
-
-Float32Array.prototype.translate = function(vector)
-{
-    let copied = this.copy();
-    copied[12] += vector[0];
-    copied[13] += vector[1];
-    copied[14] += vector[2];
-    return copied;
-}
-
-Float32Array.prototype.scale = function(vector)
-{
-    let copied = this.copy();
-    copied[0] *= vector[0];
-    copied[5] *= vector[1];
-    copied[10] *= vector[2];
-    return copied;
-}
-
-Float32Array.prototype.multiply = function(other)
-{
-    return Matrix4.multiply(this, other);
-}
-
+]);

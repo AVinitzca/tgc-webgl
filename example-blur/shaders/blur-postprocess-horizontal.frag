@@ -3,16 +3,21 @@ precision lowp float;
 varying vec2 propagatedTextureCoordinates;
 
 uniform sampler2D textureOne;
-uniform vec2 screenSize;
+uniform vec2 pixelSize;
+
+uniform float kernel[13];
 
 void main(void)
 {
-    vec2 delta = vec2(1.0, 1.0) / screenSize;
-
     vec3 sum = vec3(0.0);
-    for(float x = -3.0; x <= 3.0; x++)
-        sum += texture2D(textureOne, propagatedTextureCoordinates + vec2(delta.x * x, 0.0)).rgb;
 
+    float x = -6.0;
+    for(int index = 0; index < 13; index++)
+    {
+        sum += (texture2D(textureOne, propagatedTextureCoordinates + vec2(pixelSize.x * x, 0.0)).rgb * kernel[index]);
+        x += 10.0;
+    }
 
-    gl_FragColor = vec4(sum.rgb / 7.0, 1.0);
+    gl_FragColor = vec4(sum, 1.0);
+
 }

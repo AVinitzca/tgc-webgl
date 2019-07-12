@@ -83,13 +83,14 @@ class Shader
 		this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vertexBuffer);
 		this.gl.vertexAttribPointer(this.vertexPositionAttribute, mesh.vertexBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
 
-		if(mesh.normalBuffer)
-		{
-			this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.normalBuffer);
-			this.gl.vertexAttribPointer(this.vertexNormalAttribute, mesh.normalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
-		}
-		else
-			this.gl.disableVertexAttribArray(this.vertexNormalAttribute);
+		if(this.vertexNormalAttribute !== -1)
+			if(mesh.normalBuffer !== undefined)
+			{
+				this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.normalBuffer);
+				this.gl.vertexAttribPointer(this.vertexNormalAttribute, mesh.normalBuffer.itemSize, this.gl.FLOAT, false, 0, 0);
+			}
+			else
+				this.gl.disableVertexAttribArray(this.vertexNormalAttribute);
 
 		if(mesh.textureBuffer)
 		{

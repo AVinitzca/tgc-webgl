@@ -10,14 +10,15 @@ class Renderer
     {
         this.shaders = {};
         this.findCanvas();
-        this.canvas2D = new Canvas2D(this.width, this.height);
+        this.canvas2D = new Canvas2D(this.size);
         this.initializeGL();
 
-        this.setProjection(mat4.perspective(90.0, this.width / this.height, .1, 1000.0));
+
+        this.setProjection(Matrix4.perspective(90.0, this.size.x / this.size.y, .1, 1000.0));
         this.setClearColor(vec4.createFrom(0.39215686274, 0.58431372549, 0.9294117647, 1.0));
 
         this.defaultShaderLoader = new ShaderLoader([{name: 'default', vertex: 'webgl/render/default/default.vert', fragment: 'webgl/render/default/default.frag'}]);
-        this.contentLoader = new ResourceLoader([], function(loader)
+        this.contentLoader = new ResourceLoader([0], function(loader)
         {
             Core.renderer.createFullscreenQuad();
             loader.advance();
@@ -29,10 +30,9 @@ class Renderer
     findCanvas()
     {
         this.canvas = document.getElementById("main-canvas");
-        this.width = document.body.clientWidth;
-        this.height = document.body.clientHeight;
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.size = new Vector2(document.body.clientWidth, document.body.clientHeight);
+        this.canvas.width = this.size.x;
+        this.canvas.height = this.size.y;
     }
 
     initializeGL()
@@ -40,8 +40,8 @@ class Renderer
         try
         {
             this.gl = this.canvas.getContext("experimental-webgl");
-            this.gl.viewportWidth = this.width;
-            this.gl.viewportHeight = this.height;
+            this.gl.viewportWidth = this.size.x;
+            this.gl.viewportHeight = this.size.y;
             this.gl.enable(this.gl.DEPTH_TEST);
             this.gl.enable(this.gl.CULL_FACE);
             this.gl.disable(this.gl.BLEND);
@@ -86,9 +86,8 @@ class Renderer
 
     preRender()
     {
-        var view = mat4.lookAt(this.camera.position, this.camera.lookAt, this.camera.up);
-        var viewProjection = mat4.identity();
-        mat4.multiply(this.projection, view, viewProjection);
+        let view = Matrix4.lookAtLeftHanded(this.camera.position, this.camera.lookAt, this.camera.up);
+        let viewProjection = this.projection.multiply(view);
 
         for(var key in this.shaders)
             this.shaders[key].setVPMatrix(viewProjection);
@@ -113,9 +112,7 @@ class Renderer
     {
         this.fullscreenQuad.clearTextures();
         if (texture instanceof FrameBuffer)
-        {
             this.fullscreenQuad.addTexture("textureOne", texture.getTexture());
-        }
         else if(texture instanceof Texture)
             this.fullscreenQuad.addTexture("textureOne", texture);
         else
@@ -132,11 +129,6 @@ class Renderer
 
         this.fullscreenQuad.shader = shader;
         this.fullscreenQuad.render();
-    }
-
-    get size()
-    {
-        return {x: this.width, y: this.height};
     }
     
     dispose()

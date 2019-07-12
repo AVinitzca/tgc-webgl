@@ -89,7 +89,6 @@ class Project
         this.soundLoader = new SoundLoader(this.assets.sounds);
 
         this.assetLoader = new ResourceLoaderCollection([this.meshLoader, this.shaderLoader, this.textureLoader, this.soundLoader]);
-
     }
 
 
@@ -106,7 +105,7 @@ class Project
 
     parseAssetPath(asset)
     {
-        if (asset.path != undefined)
+        if (asset.path !== undefined)
             asset.path = this.path + "/" + asset.path;
         else
         {

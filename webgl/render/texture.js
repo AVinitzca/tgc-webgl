@@ -5,7 +5,7 @@ class Texture
 	constructor(path, after)
 	{
 		if(path instanceof Object)
-			this.createFromSize(Core.renderer.gl, path);
+			this.createFromSize(path, after);
 		else
 		{
 			this.gl = Core.renderer.gl;
@@ -23,15 +23,16 @@ class Texture
 		this.gl = gl;
 		this.width = size.x;
 		this.height = size.y;
+
 		this.id = this.gl.createTexture();
 
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT );
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.REPEAT );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
 
-		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, size.x, size.y, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.width, this.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
 	}
 
 	loadImageAsync(path)
@@ -60,8 +61,8 @@ class Texture
 		this.gl.bindTexture(this.gl.TEXTURE_2D, this.id);
 		this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image);
 		//gl.generateMipmap(gl.TEXTURE_2D);
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.REPEAT);
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
 	}
 

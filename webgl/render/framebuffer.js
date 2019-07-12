@@ -15,11 +15,11 @@ class FrameBuffer
             const depthBuffer = this.gl.createRenderbuffer();
             this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, depthBuffer);
 
-            this.gl.renderbufferStorage(this.gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, size.x, size.y);
+            this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, size.x, size.y);
             this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer);
         }
 
-        FrameBuffer.unbind(this.gl);
+        FrameBuffer.unbind();
     }
 
     bind()
@@ -32,9 +32,14 @@ class FrameBuffer
         Core.renderer.gl.bindFramebuffer(Core.renderer.gl.FRAMEBUFFER, null);
     }
 
-    get textureId()
+    getTextureId()
     {
         return this.texture.id;
+    }
+
+    getTexture()
+    {
+        return this.texture;
     }
 }
 

@@ -1,12 +1,11 @@
 class Canvas2D
 {
-    constructor(width, height, textColor = "#FFFF00", font = "14px Arial")
+    constructor(size, textColor = "#FFFF00", font = "14px Arial")
     {
         this.canvas = document.getElementById("canvas2D");
-        this.width = width;
-        this.height = height;
-        this.canvas.width = width;
-        this.canvas.height = height;
+        this.size = size;
+        this.canvas.width = size.x;
+        this.canvas.height = size.y;
         this.context = this.canvas.getContext('2d');
         this.context.fillStyle = textColor;
         this.context.font = font;
@@ -17,11 +16,11 @@ class Canvas2D
 
     clear()
     {
-        this.context.clearRect(0, 0, this.width, this.height);
+        this.context.clearRect(0, 0, this.size.x, this.size.y);
     }
 
     drawFPS(FPS)
     {
-        this.context.fillText(FPS + "FPS", this.width - 70, 20);
+        this.context.fillText(FPS + "FPS", this.size.x - 70, 20);
     }
 }
