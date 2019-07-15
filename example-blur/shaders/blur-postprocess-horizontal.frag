@@ -15,7 +15,7 @@ void main(void)
     for(int index = 0; index < 13; index++)
     {
         sum += (texture2D(textureOne, propagatedTextureCoordinates + vec2(pixelSize.x * x, 0.0)).rgb * kernel[index]);
-        x += 10.0;
+        x += 1.0;
     }
 
     gl_FragColor = vec4(sum, 1.0);
