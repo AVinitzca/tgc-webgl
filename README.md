@@ -6,13 +6,16 @@ An open source 3D graphics framework made in Javascript with _WebGL_ and [ammo.j
 
 ### Running the project
 
+To run the project you clone the repository and drag the `index.html` file into your browser. 
+
 #### Firefox
 
-Clone this repository and drag `index.html` to Firefox. 
+You should be good to go. Cloning the project and dragging the file should be enough to run the framework in the latest Firefox version.
 
 #### Chrome
 
 Clone this repository, install [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb) and select your cloned repository folder as the server folder (using _CHOOSE FOLDER_).
+Find `index.html` in your local server.
 
 #### Other browsers
 
