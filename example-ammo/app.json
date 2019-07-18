@@ -1,0 +1,11 @@
+{
+	"use_ammo": true,
+    "assets":
+    {
+        "textures":
+        [
+            {"path": "textures/lava.jpg"},
+            {"path": "textures/concrete.jpg"}
+        ]
+    }
+}
