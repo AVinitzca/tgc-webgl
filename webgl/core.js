@@ -59,6 +59,12 @@ class Core
         Core.currentPreUpdate = Core.preUpdate;
     }
 
+    static terminatePhysics()
+    {
+        if(Core.physicsWorker !== undefined)
+            Core.physicsWorker.terminate();
+    }
+
     static preUpdate(elapsedTime)
     {
         Core.timer.start(elapsedTime);
@@ -67,7 +73,7 @@ class Core
 
     static preUpdateWithPhysics(elapsedTime)
     {
-        Core.app.physicsWorld.stepSimulation(elapsedTime, 60);
+        setInterval(function(){Core.app.physicsWorld.stepSimulation(elapsedTime, 60);}, 20);
         Core.preUpdate(elapsedTime);
     }
 
@@ -106,14 +112,14 @@ class Core
         Core.loop(0.0);
     }
 
-    static loadPhysics(Ammo)
+    static loadPhysics()
     {
         let collisionConfiguration  = new Ammo.btDefaultCollisionConfiguration(),
             dispatcher              = new Ammo.btCollisionDispatcher(collisionConfiguration),
             overlappingPairCache    = new Ammo.btDbvtBroadphase(),
             solver                  = new Ammo.btSequentialImpulseConstraintSolver();
         Core.app.physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        Core.app.physicsWorld.setGravity(new Ammo.btVector3( 0, -10.0, 0 ));
+        Core.app.physicsWorld.setGravity((new Vector3(0.0, -10.0, 0.0)).toAmmoVector());
     }
 
     static disposeApp()
@@ -129,9 +135,9 @@ class Core
 
     static dispose()
     {
-        /*Core.disposeApp();
+        Core.disposeApp();
         Core.audioManager.dispose();
-        Core.renderer.dispose();*/
+        Core.renderer.dispose();
     }
 
 

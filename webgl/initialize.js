@@ -114,6 +114,25 @@ class SourceCodeLoader extends ResourceLoader
     }
 }
 
+class AmmoSourceCodeLoader extends ResourceLoader
+{
+    constructor(resources)
+    {
+        super(resources, function(loader, source, resolve, reject)
+        {
+            const script = document.createElement('script');
+            document.body.appendChild(script);
+            script.onload = function(){Ammo().then(function()
+                {
+                    loader.advance();
+                });};
+            script.onerror = reject;
+            script.async = true;
+            script.src = source;
+        });
+    }
+}
+
 window.sourceLoaded = function()
 {
     Core.initialize();

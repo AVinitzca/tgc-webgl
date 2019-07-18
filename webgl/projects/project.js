@@ -28,8 +28,8 @@ class Project
         this.setAssetsLoader();
         this.setPhysicsLoader();
 
-        let startProject = new ResourceLoader([], function(loader){loader.advance();});
-        this.physicsLoader.derivesIn(startProject);
+        let startProject = new ResourceLoader([1], function(loader){loader.advance();});
+        this.physicsHandlersLoader.derivesIn(startProject);
         this.assetLoader.derivesIn(startProject);
         this.sourceLoader.derivesIn(startProject);
         startProject.setCallback(this, this.startProject);
@@ -46,7 +46,6 @@ class Project
         this.setAppAssets(newApp);
 
         Core.queueAppSwitch(newApp);
-        Core.setWithoutPhysics();
     }
 
     setAppAssets(app)
@@ -63,15 +62,15 @@ class Project
     {
         if(this.usesPhysics && !Projects.alreadyLoadedPhysics)
         {
-            this.physicsPreLoader = new SourceCodeLoader(new Set(['webgl/ammo/ammo.js']));
-            this.physicsLoader = new SourceCodeLoader(new Set(
+            this.physicsLoader = new AmmoSourceCodeLoader(new Set(['webgl/ammo/ammo.js']));
+            this.physicsHandlersLoader = new SourceCodeLoader(new Set(
                 [
                     'webgl/ammo/ammostaticplane.js',
                     'webgl/ammo/ammoutils.js',
                     'webgl/ammo/ammosphere.js',
                     'webgl/ammo/ammobox.js'
                 ]));
-            this.physicsPreLoader.derivesIn(this.physicsLoader);
+            this.physicsLoader.derivesIn(this.physicsHandlersLoader);
             Projects.alreadyLoadedPhysics = true;
         }
         else

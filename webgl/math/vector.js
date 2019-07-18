@@ -214,6 +214,26 @@ class Vector3 extends Vector
         return this.z;
     }
 
+    set x(value)
+    {
+        this[0] = value;
+    }
+
+    set y(value)
+    {
+        this[1] = value;
+    }
+
+    set z(value)
+    {
+        this[2] = value;
+    }
+
+    set xy(value)
+    {
+        this[0] = value[0];
+        this[1] = value[1];
+    }
 
     static get zero() // out of ten
     {

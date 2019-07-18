@@ -10,7 +10,7 @@ class AmmoUtils
             var origin = transformWorld.getOrigin();
             var rotation = transformWorld.getRotation();
             var rot = quat4.createFrom(rotation.x(), rotation.y(), rotation.z(), rotation.w());
-            return mat4.fromRotationTranslation(rot, Vector3.fromAmmoVector(origin));
+            return Matrix4.fromRotationTranslation(rot, Vector3.fromAmmoVector(origin));
         }
         return Matrix4.identity();
     }

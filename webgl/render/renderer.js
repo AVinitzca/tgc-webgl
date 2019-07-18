@@ -14,7 +14,7 @@ class Renderer
         this.initializeGL();
 
 
-        this.setProjection(Matrix4.perspective(90.0, this.size.x / this.size.y, .1, 1000.0));
+        this.setProjection(Matrix4.perspective(90.0, this.size.x / this.size.y, .1, 10000.0));
         this.setClearColor(vec4.createFrom(0.39215686274, 0.58431372549, 0.9294117647, 1.0));
 
         this.defaultShaderLoader = new ShaderLoader([{name: 'default', vertex: 'webgl/render/default/default.vert', fragment: 'webgl/render/default/default.frag'}]);
