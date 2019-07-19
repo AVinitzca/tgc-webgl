@@ -73,7 +73,7 @@ class Core
 
     static preUpdateWithPhysics(elapsedTime)
     {
-        setInterval(function(){Core.app.physicsWorld.stepSimulation(elapsedTime, 60);}, 20);
+        Core.app.physicsWorld.stepSimulation(elapsedTime, 60);
         Core.preUpdate(elapsedTime);
     }
 

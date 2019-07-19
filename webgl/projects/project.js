@@ -70,14 +70,14 @@ class Project
                     'webgl/ammo/ammosphere.js',
                     'webgl/ammo/ammobox.js'
                 ]));
-            this.physicsLoader.derivesIn(this.physicsHandlersLoader);
             Projects.alreadyLoadedPhysics = true;
         }
         else
         {
-            this.physicsPreLoader = new ResourceLoader([]);
+            this.physicsHandlersLoader = new ResourceLoader([]);
             this.physicsLoader = new ResourceLoader([]);
         }
+        this.physicsLoader.derivesIn(this.physicsHandlersLoader);
     }
 
     setAssetsLoader()
